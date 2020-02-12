@@ -1,0 +1,15 @@
+plugins {
+	id 'java'
+	id 'application'
+	id 'eclipse'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation files('libs/h2o-genmodel.jar')
+}
+
+mainClassName = 'App'
