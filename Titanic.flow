@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "cells": [
+    {
+      "type": "h1",
+      "input": "H2O Flow - Titanic Example"
+    },
+    {
+      "type": "md",
+      "input": "import Titanic training data and parse data into a __frame__"
+    },
+    {
+      "type": "cs",
+      "input": "importFiles [ \"https://raw.githubusercontent.com/choas/h2o-titanic/master/data/train.csv\" ]"
+    },
+    {
+      "type": "cs",
+      "input": "parseFiles\n  source_frames: [\"https://raw.githubusercontent.com/choas/h2o-titanic/master/data/train.csv\"]\n  destination_frame: \"train.hex\"\n  parse_type: \"CSV\"\n  separator: 44\n  number_columns: 12\n  single_quotes: false\n  column_names: [\"PassengerId\",\"Survived\",\"Pclass\",\"Name\",\"Sex\",\"Age\",\"SibSp\",\"Parch\",\"Ticket\",\"Fare\",\"Cabin\",\"Embarked\"]\n  column_types: [\"Numeric\",\"Enum\",\"Numeric\",\"String\",\"Enum\",\"Numeric\",\"Numeric\",\"Numeric\",\"Numeric\",\"Numeric\",\"Enum\",\"Enum\"]\n  delete_on_done: true\n  check_header: 1\n  chunk_size: 4194304"
+    },
+    {
+      "type": "raw",
+      "input": "take a look at the data / frame\nas you can see age has 177 missing values"
+    },
+    {
+      "type": "cs",
+      "input": "getFrameSummary \"train.hex\""
+    },
+    {
+      "type": "raw",
+      "input": "fill up the missing age data with median values"
+    },
+    {
+      "type": "cs",
+      "input": "imputeColumn {\"frame\":\"train.hex\",\"column\":\"Age\",\"method\":\"median\",\"combineMethod\":\"interpolate\"}"
+    },
+    {
+      "type": "cs",
+      "input": "getFrameSummary \"train.hex\""
+    },
+    {
+      "type": "raw",
+      "input": "split the training data / frame into 75% train data and 25% validate data"
+    },
+    {
+      "type": "cs",
+      "input": "splitFrame \"train.hex\", [0.75], [\"train_0.750\",\"validate_0.250\"], 100450"
+    },
+    {
+      "type": "md",
+      "input": "## AutoML\n\n- create an AutoML with the training and valiadion data / frame on Survived\n- use only Survived, PClass, Sex and Age\n- algo: XGBoost\n- 30 sec. maximum"
+    },
+    {
+      "type": "cs",
+      "input": "runAutoML {\"build_control\":{\"project_name\":\"titanic\",\"nfolds\":5,\"balance_classes\":false,\"stopping_criteria\":{\"seed\":-1,\"max_models\":0,\"max_runtime_secs\":30,\"max_runtime_secs_per_model\":0,\"stopping_rounds\":3,\"stopping_metric\":\"AUTO\",\"stopping_tolerance\":0.001},\"keep_cross_validation_predictions\":true,\"keep_cross_validation_models\":true,\"keep_cross_validation_fold_assignment\":false},\"input_spec\":{\"training_frame\":\"train_0.750\",\"response_column\":\"Survived\",\"validation_frame\":\"validate_0.250\",\"ignored_columns\":[\"PassengerId\",\"Name\",\"Ticket\",\"Cabin\"],\"sort_metric\":\"AUTO\"},\"build_models\":{\"exclude_algos\":[\"GLM\",\"DRF\",\"GBM\",\"DeepLearning\",\"StackedEnsemble\"],\"monotone_constraints\":[]}}, 'exec'"
+    },
+    {
+      "type": "cs",
+      "input": "getLeaderboard \"titanic@@Survived\""
+    },
+    {
+      "type": "cs",
+      "input": "getModel \"XGBoost_grid__1_AutoML_20200212_210321_model_3\""
+    }
+  ]
+}
