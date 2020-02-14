@@ -11,33 +11,31 @@ public class App {
 
 		EasyPredictModelWrapper model_orig = new EasyPredictModelWrapper(MojoModel.load(
 				"src/main/resources/XGBoost_grid__1_AutoML_20200212_210321_model_3.zip"));
-		{
-			RowData rowTrain3 = new RowData();
-			rowTrain3.put("Pclass", "3");
-			rowTrain3.put("Sex", "female");
-			rowTrain3.put("Age", "26.0");
-			rowTrain3.put("SibSp", "0");
-			rowTrain3.put("Parch", "0");
-			rowTrain3.put("Fare", "7.9250");
-			rowTrain3.put("Embarked", "S");
-			// Survived 1
+		RowData rowTrain3 = new RowData();
+		rowTrain3.put("Pclass", "3");
+		rowTrain3.put("Sex", "female");
+		rowTrain3.put("Age", "26.0");
+		rowTrain3.put("SibSp", "0");
+		rowTrain3.put("Parch", "0");
+		rowTrain3.put("Fare", "7.9250");
+		rowTrain3.put("Embarked", "S");
+		// Survived 1
 
-			RowData rowTest896 = new RowData();
-			rowTest896.put("Pclass", "3");
-			rowTest896.put("Sex", "female");
-			rowTest896.put("Age", "22.0");
-			rowTest896.put("SibSp", "1");
-			rowTest896.put("Parch", "1");
-			rowTest896.put("Fare", "12.2875");
-			rowTest896.put("Embarked", "S");
-			// Survived 1
-			
-			BinomialModelPrediction p = model_orig.predictBinomial(rowTrain3);
-			printProbabilities("ID 3	", p);
-			
-			p = model_orig.predictBinomial(rowTest896);
-			printProbabilities("ID 896	", p);
-		}
+		RowData rowTest896 = new RowData();
+		rowTest896.put("Pclass", "3");
+		rowTest896.put("Sex", "female");
+		rowTest896.put("Age", "22.0");
+		rowTest896.put("SibSp", "1");
+		rowTest896.put("Parch", "1");
+		rowTest896.put("Fare", "12.2875");
+		rowTest896.put("Embarked", "S");
+		// Survived 1
+		
+		BinomialModelPrediction p = model_orig.predictBinomial(rowTrain3);
+		printProbabilities("ID 3	", p);
+		
+		p = model_orig.predictBinomial(rowTest896);
+		printProbabilities("ID 896	", p);
 	}
 	
 	static void printProbabilities(String message, BinomialModelPrediction p) {
