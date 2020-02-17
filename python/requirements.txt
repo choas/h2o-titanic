@@ -1,0 +1,5 @@
+requests
+tabulate
+colorama>=0.3.8
+h2o
+jupyter
